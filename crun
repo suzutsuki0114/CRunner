@@ -1,0 +1,61 @@
+#!/bin/bash
+
+function initialize() {
+  status=0
+}
+
+function usage() {
+  cat <<EOT
+Usage:
+  crun [Options] <File>
+
+Options:
+  --help, -h   Print this usage and exit
+EOT
+  exit 0
+}
+
+function error() {
+  status="${?}"
+  case "$1" in
+    args)
+      echo "Error! (Too many arguments)" 1>&2
+      status="1"
+      ;;
+    *)
+      echo "Error! (Exit status: ${status})" 1>&2
+      ;;
+  esac
+  exit ${status}
+}
+
+function checkUsage() {
+  case "${1}" in
+    -h|--help)
+      usage
+      ;;
+    "")
+      usage
+      ;;
+  esac
+}
+
+function checkArgs() {
+  if [ "${#}" != 1 ]; then
+    error args
+  fi
+}
+
+function main() {
+  gcc "${1}" -o "${1%%.*}.out.swp" || error
+  "$(pwd)/${1%%.*}.out.swp" || status="${?}"
+  rm "${1%%.*}.out.swp" || error
+}
+
+initialize
+checkUsage "${@}"
+checkArgs "${@}"
+
+main "${@}"
+
+exit "${status}"
