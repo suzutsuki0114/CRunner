@@ -6,6 +6,9 @@ function initialize() {
 
 function usage() {
   cat <<EOT
+Description:
+  Run a C program without compile
+
 Usage:
   crun [Options] <File>
 
